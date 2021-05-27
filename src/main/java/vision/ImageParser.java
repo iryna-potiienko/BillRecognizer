@@ -85,6 +85,10 @@ public class ImageParser {
             throw new ChainNotSupportedException("Not supported chain");
         }
 
+        for (Map.Entry<String, String> stringStringEntry : itemPerPrice.entrySet()) {
+            stringStringEntry.setValue(stringStringEntry.getValue().replace("A", "грн"));
+        }
+
         return itemPerPrice;
     }
 
