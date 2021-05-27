@@ -25,16 +25,17 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 public class ImageController implements Initializable {
 
     private ImageParser imageParser;
+
+    private final AtomicInteger atomicInteger = new AtomicInteger();
 
     @FXML
     private TextArea textArea;
@@ -113,9 +114,7 @@ public class ImageController implements Initializable {
             row.createCell(1).setCellValue(item.getPrice());
         }
 
-        long currentTimeMillis = System.currentTimeMillis();
-
-        FileOutputStream fileOut = new FileOutputStream("items-" + currentTimeMillis + ".xlsx");
+        FileOutputStream fileOut = new FileOutputStream("items-" + atomicInteger.getAndIncrement() + ".xlsx");
         workbook.write(fileOut);
         fileOut.close();
         workbook.close();
