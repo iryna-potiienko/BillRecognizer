@@ -1,15 +1,14 @@
-package vision.fora;
+package vision.chain.fora;
+
+import io.vavr.Tuple2;
 
 import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static vision.util.CheckUtils.extractContentTillSymbols;
+import static vision.util.CheckUtils.extractContentWithPrices;
 import static vision.util.CheckUtils.extractItemPerPriceMap;
-import static vision.util.CheckUtils.extractPrices;
-import static vision.util.CheckUtils.moveIteratorToGivenSymbols;
-import static vision.util.CheckUtils.removeSingleItems;
 
 public class ForaParser {
     private static final List<String> CONTENT_END_SYMBOLS = new ArrayList<>();
@@ -19,21 +18,16 @@ public class ForaParser {
     }
 
     public static Map<String, String> parseForaChain(List<String> lines) {
-        lines = removeSingleItems(lines);
+        Tuple2<List<String>, List<String>> contentWithPrices = extractContentWithPrices(lines, CONTENT_END_SYMBOLS);
 
-        Iterator<String> iterator = lines.iterator();
+        List<String> prices = contentWithPrices._2;
+        List<String> content = contentWithPrices._1;
 
-        moveIteratorToGivenSymbols(iterator);
-
-        List<String> content = extractContentTillSymbols(iterator, CONTENT_END_SYMBOLS);
-
-        List<String> prices = extractPrices(content);
+        if (content.isEmpty() || prices.isEmpty()) {
+            return new HashMap<>();
+        }
 
         content.removeAll(prices);
-
-        if (prices.size() != content.size()) {
-            throw new RuntimeException("Number of prices and item names if not match for ATB");
-        }
 
         return extractItemPerPriceMap(content, prices);
     }

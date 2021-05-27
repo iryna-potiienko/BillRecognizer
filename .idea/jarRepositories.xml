@@ -2,9 +2,39 @@
 <project version="4">
   <component name="RemoteRepositoriesConfiguration">
     <remote-repository>
+      <option name="id" value="channelpilot-releases" />
+      <option name="name" value="channelpilot-releases" />
+      <option name="url" value="https://nexus.channelpilot.com/repository/channelpilot-releases/" />
+    </remote-repository>
+    <remote-repository>
       <option name="id" value="central" />
       <option name="name" value="Central Repository" />
       <option name="url" value="https://repo.maven.apache.org/maven2" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="central" />
+      <option name="name" value="central" />
+      <option name="url" value="https://nexus.channelpilot.com/repository/central/" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="atlassian-central-3rd" />
+      <option name="name" value="atlassian-central-3rd" />
+      <option name="url" value="https://nexus.channelpilot.com/repository/atlassian-3rd-party/" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="channelpilot-features" />
+      <option name="name" value="channelpilot-features" />
+      <option name="url" value="https://nexus.channelpilot.com/repository/channelpilot-features/" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="channelpilot-snapshots" />
+      <option name="name" value="channelpilot-snapshots" />
+      <option name="url" value="https://nexus.channelpilot.com/repository/channelpilot-snapshots/" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="atlassian-public" />
+      <option name="name" value="atlassian-public" />
+      <option name="url" value="https://nexus.channelpilot.com/repository/atlassian-public/" />
     </remote-repository>
     <remote-repository>
       <option name="id" value="central" />
@@ -12,9 +42,29 @@
       <option name="url" value="https://repo1.maven.org/maven2" />
     </remote-repository>
     <remote-repository>
+      <option name="id" value="channelpilot-externals-releases" />
+      <option name="name" value="channelpilot-externals-releases" />
+      <option name="url" value="https://nexus.channelpilot.com/repository/external-releases/" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="terracotta-releases" />
+      <option name="name" value="terracotta-releases" />
+      <option name="url" value="https://nexus.channelpilot.com/repository/terracotta-releases/" />
+    </remote-repository>
+    <remote-repository>
       <option name="id" value="jboss.community" />
       <option name="name" value="JBoss Community repository" />
       <option name="url" value="https://repository.jboss.org/nexus/content/repositories/public/" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="channelpilot-rcs" />
+      <option name="name" value="channelpilot-releases" />
+      <option name="url" value="https://nexus.channelpilot.com/repository/channelpilot-rcs/" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="maven-central" />
+      <option name="name" value="maven-central" />
+      <option name="url" value="https://repo1.maven.org/maven2" />
     </remote-repository>
   </component>
 </project>

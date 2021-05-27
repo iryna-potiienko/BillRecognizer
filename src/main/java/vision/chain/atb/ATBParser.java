@@ -1,18 +1,17 @@
-package vision.atb;
+package vision.chain.atb;
+
+import io.vavr.Tuple2;
 
 import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
 
-import static vision.util.CheckUtils.extractContentTillSymbols;
+import static vision.util.CheckUtils.extractContentWithPrices;
 import static vision.util.CheckUtils.extractItemPerPriceMap;
 import static vision.util.CheckUtils.extractMatchedSymbols;
-import static vision.util.CheckUtils.extractPrices;
-import static vision.util.CheckUtils.moveIteratorToGivenSymbols;
-import static vision.util.CheckUtils.removeNotNeededItemsByPredicate;
-import static vision.util.CheckUtils.removeSingleItems;
+import static vision.util.CheckUtils.removeFromItemsByPredicate;
 
 public class ATBParser {
     private static final List<String> MATCH_SYMBOLS = new ArrayList<>();
@@ -21,37 +20,42 @@ public class ATBParser {
 
     static {
         MATCH_SYMBOLS.add("Паk");
+        MATCH_SYMBOLS.add("Пак");
+        MATCH_SYMBOLS.add("Nak");
         MATCH_SYMBOLS.add(" г");
+        MATCH_SYMBOLS.add(" л ");
         MATCH_SYMBOLS.add("гат");
-        MATCH_SYMBOLS.add(" кг");
+        MATCH_SYMBOLS.add(" кг ");
+        MATCH_SYMBOLS.add(" мл ");
+        MATCH_SYMBOLS.add(" мм ");
+        MATCH_SYMBOLS.add(" kr ");
         MATCH_SYMBOLS.add(" шт");
         MATCH_SYMBOLS.add("Ci");
+        MATCH_SYMBOLS.add("Дес");
+        MATCH_SYMBOLS.add(" o/п ");
+        MATCH_SYMBOLS.add(" ф/п ");
 
         CONTENT_END_SYMBOLS.add("CUMA");
         CONTENT_END_SYMBOLS.add("СУМА");
         CONTENT_END_SYMBOLS.add("СУNА");
         CONTENT_END_SYMBOLS.add("CYMA");
         CONTENT_END_SYMBOLS.add("CUMA");
+        CONTENT_END_SYMBOLS.add("CYNA");
     }
 
     public static Map<String, String> parseATBChain(List<String> lines) {
-        lines = removeSingleItems(lines);
+        Tuple2<List<String>, List<String>> contentWithPrices = extractContentWithPrices(lines, CONTENT_END_SYMBOLS);
 
-        Iterator<String> iterator = lines.iterator();
+        List<String> content = contentWithPrices._1;
+        List<String> prices = contentWithPrices._2;
 
-        moveIteratorToGivenSymbols(iterator);
+        if (content.isEmpty() || prices.isEmpty()) {
+            return new HashMap<>();
+        }
 
-        List<String> content = extractContentTillSymbols(iterator, CONTENT_END_SYMBOLS);
-
-        List<String> prices = extractPrices(content);
-
-        prices = removeNotNeededItemsByPredicate(prices, SALES_PREDICATE.negate());
+        prices = removeFromItemsByPredicate(prices, SALES_PREDICATE.negate());
 
         List<String> matchedSymbols = extractMatchedSymbols(content, MATCH_SYMBOLS);
-
-        if (prices.size() != matchedSymbols.size()) {
-            throw new RuntimeException("Number of prices and item names if not match for ATB");
-        }
 
         return extractItemPerPriceMap(matchedSymbols, prices);
     }
