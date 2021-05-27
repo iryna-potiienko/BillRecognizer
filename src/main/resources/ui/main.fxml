@@ -26,7 +26,8 @@
         </rowConstraints>
          <children>
             <Button mnemonicParsing="false" onAction="#locateFile" prefHeight="71.0" prefWidth="249.0" text="Browse Photo" />
-            <Button mnemonicParsing="false" onAction="#clear" prefHeight="71.0" prefWidth="249.0" text="Clear" GridPane.rowIndex="1" />
+            <Button mnemonicParsing="false" onAction="#clear" prefHeight="71.0" prefWidth="140.0" text="Clear" GridPane.rowIndex="2" />
+            <Button mnemonicParsing="false" onAction="#loadToExcel" prefHeight="82.0" prefWidth="140.0" text="Load to Excel" GridPane.rowIndex="1" />
          </children>
       </GridPane>
       <TextArea fx:id="textArea" prefHeight="579.0" prefWidth="230.0" GridPane.columnIndex="1" />

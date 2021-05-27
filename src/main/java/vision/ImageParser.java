@@ -9,6 +9,10 @@ import com.google.cloud.vision.v1.ImageAnnotatorClient;
 import com.google.cloud.vision.v1.ImageContext;
 import com.google.protobuf.ByteString;
 import vision.chain.ChainName;
+import vision.exception.ChainNotDefinedException;
+import vision.exception.ChainNotSupportedException;
+import vision.exception.FailedToExtractImageTextException;
+import vision.exception.FailedToInitException;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -44,9 +48,9 @@ public class ImageParser {
         }
     }
 
-    public String extractTextFromPhoto(File photo) throws IOException {
+    public Map<String, String> extractTextFromPhoto(File photo) throws IOException, FailedToInitException, FailedToExtractImageTextException, ChainNotDefinedException, ChainNotSupportedException {
         if (vision == null) {
-            return "";
+            throw new FailedToInitException();
         }
 
         ByteString imgBytes = prepareImageByte(photo);
@@ -65,7 +69,7 @@ public class ImageParser {
 
         String imageText = extractImageText(res);
         if (imageText == null) {
-            return String.format("Error: %s%n", res.getError().getMessage());
+            throw new FailedToExtractImageTextException(String.format("Error: %s%n", res.getError().getMessage()));
         }
 
         List<String> imageLines = readImageText(imageText);
@@ -73,17 +77,15 @@ public class ImageParser {
         ChainName chainName = determinateChain(imageLines);
 
         if (ChainName.UNDEFINED.equals(chainName)) {
-            return "Chain is not defined";
+            throw new ChainNotDefinedException("Chain is not defined");
         }
 
         Map<String, String> itemPerPrice = parseImageLines(imageLines, chainName);
         if (imageLines.isEmpty()) {
-            return "Not supported chain";
+            throw new ChainNotSupportedException("Not supported chain");
         }
 
-        return itemPerPrice.entrySet().stream()
-                .map(entry -> entry.getKey() + " = " + entry.getValue() + " ")
-                .collect(Collectors.joining("\n"));
+        return itemPerPrice;
     }
 
 
