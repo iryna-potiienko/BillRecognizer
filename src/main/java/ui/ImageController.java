@@ -25,6 +25,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
@@ -111,7 +113,9 @@ public class ImageController implements Initializable {
             row.createCell(1).setCellValue(item.getPrice());
         }
 
-        FileOutputStream fileOut = new FileOutputStream("items.xlsx");
+        String dateTime = LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME);
+
+        FileOutputStream fileOut = new FileOutputStream("items" + dateTime + ".xlsx");
         workbook.write(fileOut);
         fileOut.close();
         workbook.close();
