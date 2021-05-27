@@ -113,9 +113,9 @@ public class ImageController implements Initializable {
             row.createCell(1).setCellValue(item.getPrice());
         }
 
-        String dateTime = LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME);
+        long currentTimeMillis = System.currentTimeMillis();
 
-        FileOutputStream fileOut = new FileOutputStream("items" + dateTime + ".xlsx");
+        FileOutputStream fileOut = new FileOutputStream("items-" + currentTimeMillis + ".xlsx");
         workbook.write(fileOut);
         fileOut.close();
         workbook.close();
