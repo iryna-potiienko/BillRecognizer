@@ -9,6 +9,7 @@ import com.google.cloud.vision.v1.ImageAnnotatorClient;
 import com.google.cloud.vision.v1.ImageContext;
 import com.google.protobuf.ByteString;
 import vision.chain.ChainName;
+import vision.dto.Item;
 import vision.exception.ChainNotDefinedException;
 import vision.exception.ChainNotSupportedException;
 import vision.exception.FailedToExtractImageTextException;
@@ -48,7 +49,7 @@ public class ImageParser {
         }
     }
 
-    public Map<String, String> extractTextFromPhoto(File photo) throws IOException, FailedToInitException, FailedToExtractImageTextException, ChainNotDefinedException, ChainNotSupportedException {
+    public List<Item> extractTextFromPhoto(File photo) throws IOException, FailedToInitException, FailedToExtractImageTextException, ChainNotDefinedException, ChainNotSupportedException {
         if (vision == null) {
             throw new FailedToInitException();
         }
@@ -89,9 +90,10 @@ public class ImageParser {
             stringStringEntry.setValue(stringStringEntry.getValue().replace("A", "грн"));
         }
 
-        return itemPerPrice;
+        return itemPerPrice.entrySet().stream()
+                .map(entry -> new Item(entry.getKey(), entry.getValue()))
+                .collect(Collectors.toList());
     }
-
 
     private ByteString prepareImageByte(File file) throws IOException {
         byte[] data = Files.readAllBytes(file.toPath());
@@ -170,5 +172,4 @@ public class ImageParser {
             return new HashMap<>();
         }
     }
-
 }

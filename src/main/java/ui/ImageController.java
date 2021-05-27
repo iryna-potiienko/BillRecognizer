@@ -1,5 +1,6 @@
 package ui;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.TextArea;
@@ -26,10 +27,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
-import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
 
 public class ImageController implements Initializable {
 
@@ -40,7 +39,8 @@ public class ImageController implements Initializable {
     @FXML
     private TextArea textArea;
 
-    private Map<String, String> itemPerPrice;
+    private final ObjectMapper objectMapper = new ObjectMapper();
+
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -54,17 +54,20 @@ public class ImageController implements Initializable {
         File file = chooser.showOpenDialog(new Stage());
 
         if (file != null && file.exists()) {
+
+            List<Item> items;
+
             try {
-                itemPerPrice = imageParser.extractTextFromPhoto(file);
+                items = imageParser.extractTextFromPhoto(file);
             } catch (FailedToInitException e) {
                 textArea.setText("Failed to init");
+                return;
             } catch (FailedToExtractImageTextException | ChainNotDefinedException | ChainNotSupportedException e) {
                 textArea.setText(e.getMessage());
+                return;
             }
 
-            String result = itemPerPrice.entrySet().stream()
-                    .map(entry -> entry.getKey() + " = " + entry.getValue() + " ")
-                    .collect(Collectors.joining("\n"));
+            String result = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(items);
 
             textArea.setText(result);
         }
@@ -72,13 +75,13 @@ public class ImageController implements Initializable {
 
     @FXML
     protected void loadToExcel() throws Exception {
-        if (itemPerPrice.isEmpty()) {
+        if (textArea.getText().isEmpty()) {
             return;
         }
 
-        List<Item> items = itemPerPrice.entrySet().stream()
-                .map(entry -> mapToItem(entry.getKey(), entry.getValue()))
-                .collect(Collectors.toList());
+        String text = textArea.getText();
+
+        Item[] items = objectMapper.readValue(text, Item[].class);
 
         String[] COLUMNs = {"Name", "Price"};
 
@@ -118,15 +121,6 @@ public class ImageController implements Initializable {
         workbook.write(fileOut);
         fileOut.close();
         workbook.close();
-    }
-
-    private Item mapToItem(String name, String price) {
-        Item item = new Item();
-
-        item.setName(name);
-        item.setPrice(price);
-
-        return item;
     }
 
     @FXML
