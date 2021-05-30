@@ -1,6 +1,5 @@
 package ui;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.TextArea;
@@ -26,9 +25,13 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.ResourceBundle;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 public class ImageController implements Initializable {
 
@@ -39,7 +42,7 @@ public class ImageController implements Initializable {
     @FXML
     private TextArea textArea;
 
-    private final ObjectMapper objectMapper = new ObjectMapper();
+    private Map<String, String> itemPerPrice;
 
 
     @Override
@@ -55,10 +58,8 @@ public class ImageController implements Initializable {
 
         if (file != null && file.exists()) {
 
-            List<Item> items;
-
             try {
-                items = imageParser.extractTextFromPhoto(file);
+                itemPerPrice = imageParser.extractTextFromPhoto(file);
             } catch (FailedToInitException e) {
                 textArea.setText("Failed to init");
                 return;
@@ -67,7 +68,9 @@ public class ImageController implements Initializable {
                 return;
             }
 
-            String result = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(items);
+            String result = itemPerPrice.entrySet().stream()
+                    .map(entry -> entry.getKey() + " = " + entry.getValue() + " ")
+                    .collect(Collectors.joining("\n"));
 
             textArea.setText(result);
         }
@@ -79,9 +82,10 @@ public class ImageController implements Initializable {
             return;
         }
 
-        String text = textArea.getText();
-
-        Item[] items = objectMapper.readValue(text, Item[].class);
+        List<Item> items = Arrays.stream(textArea.getText().split("\n"))
+                .map(this::parseItem)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
 
         String[] COLUMNs = {"Name", "Price"};
 
@@ -121,6 +125,25 @@ public class ImageController implements Initializable {
         workbook.write(fileOut);
         fileOut.close();
         workbook.close();
+    }
+
+    private Item parseItem(String item) {
+        String[] split = item.split("=");
+
+        if (split.length < 2) {
+            return null;
+        }
+
+        return mapToItem(split[0], split[1]);
+    }
+
+    private Item mapToItem(String name, String price) {
+        Item item = new Item();
+
+        item.setName(name);
+        item.setPrice(price);
+
+        return item;
     }
 
     @FXML

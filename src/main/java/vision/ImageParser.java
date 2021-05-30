@@ -49,7 +49,7 @@ public class ImageParser {
         }
     }
 
-    public List<Item> extractTextFromPhoto(File photo) throws IOException, FailedToInitException, FailedToExtractImageTextException, ChainNotDefinedException, ChainNotSupportedException {
+    public Map<String, String> extractTextFromPhoto(File photo) throws IOException, FailedToInitException, FailedToExtractImageTextException, ChainNotDefinedException, ChainNotSupportedException {
         if (vision == null) {
             throw new FailedToInitException();
         }
@@ -90,9 +90,7 @@ public class ImageParser {
             stringStringEntry.setValue(stringStringEntry.getValue().replace("A", "грн"));
         }
 
-        return itemPerPrice.entrySet().stream()
-                .map(entry -> new Item(entry.getKey(), entry.getValue()))
-                .collect(Collectors.toList());
+        return itemPerPrice;
     }
 
     private ByteString prepareImageByte(File file) throws IOException {
