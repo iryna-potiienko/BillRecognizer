@@ -14,6 +14,9 @@ import vision.exception.ChainNotSupportedException;
 import vision.exception.FailedToExtractImageTextException;
 import vision.exception.FailedToInitException;
 
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
@@ -66,8 +69,10 @@ public class ImageParser {
 //        graphic.dispose();
 //
 //        File output = new File("temp.png");
+//
 //        ImageIO.write(result, "png", output);
-
+//
+//        ByteString imgBytes = prepareImageByte(output);
 
         ByteString imgBytes = prepareImageByte(photo);
 
