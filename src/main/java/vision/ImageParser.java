@@ -9,15 +9,11 @@ import com.google.cloud.vision.v1.ImageAnnotatorClient;
 import com.google.cloud.vision.v1.ImageContext;
 import com.google.protobuf.ByteString;
 import vision.chain.ChainName;
-import vision.dto.Item;
 import vision.exception.ChainNotDefinedException;
 import vision.exception.ChainNotSupportedException;
 import vision.exception.FailedToExtractImageTextException;
 import vision.exception.FailedToInitException;
 
-import javax.imageio.ImageIO;
-import java.awt.*;
-import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
@@ -58,19 +54,19 @@ public class ImageParser {
         }
 
 
-        BufferedImage image = ImageIO.read(photo);
-
-        BufferedImage result = new BufferedImage(
-                image.getWidth(),
-                image.getHeight(),
-                BufferedImage.TYPE_BYTE_BINARY);
-
-        Graphics2D graphic = result.createGraphics();
-        graphic.drawImage(image, 0, 0, Color.WHITE, null);
-        graphic.dispose();
-
-        File output = new File("temp.png");
-        ImageIO.write(result, "png", output);
+//        BufferedImage image = ImageIO.read(photo);
+//
+//        BufferedImage result = new BufferedImage(
+//                image.getWidth(),
+//                image.getHeight(),
+//                BufferedImage.TYPE_BYTE_BINARY);
+//
+//        Graphics2D graphic = result.createGraphics();
+//        graphic.drawImage(image, 0, 0, Color.WHITE, null);
+//        graphic.dispose();
+//
+//        File output = new File("temp.png");
+//        ImageIO.write(result, "png", output);
 
 
         ByteString imgBytes = prepareImageByte(photo);
