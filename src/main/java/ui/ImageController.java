@@ -42,8 +42,6 @@ public class ImageController implements Initializable {
     @FXML
     private TextArea textArea;
 
-    private Map<String, String> itemPerPrice;
-
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -58,6 +56,7 @@ public class ImageController implements Initializable {
 
         if (file != null && file.exists()) {
 
+            Map<String, String> itemPerPrice;
             try {
                 itemPerPrice = imageParser.extractTextFromPhoto(file);
             } catch (FailedToInitException e) {
